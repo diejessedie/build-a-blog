@@ -15,9 +15,6 @@
 
     {% block content %}
     {% endblock %}
-    <div>
-        <a href="./logout">Log Out</a>
-    </div>
 
     {% with messages = get_flashed_messages(with_categories=True) %}
     <ul>
@@ -27,12 +24,19 @@
     </ul>
     {% endwith %}
 
+    <footer>
+        <br>
+        <br>
+        <br>
+        
+        <div>
+            {% if request.endpoint != './login' %}
+            <p><a href="./logout">Log Out</a></p>
+            {% endif %}
+            <p><a href="./blog">Home</a></p>
+            <p><a href="./newblog">New Post</a></p>
+            <p><a href="./register">Register</a></p>
+        </div>
+    </footer>
 </body>
-<footer>
-    <div>
-        <p><a href="/blog">Home</a></p>
-        <p><a href="/newblog">New Post</a></p>
-        <p><a href="/register">Register</a></p>
-    </div>
-</footer>
 </html>

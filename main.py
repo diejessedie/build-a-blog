@@ -45,12 +45,20 @@ def newblog():
     if request.method == 'POST':
         blog_name = request.form['blog-name']
         blog_body = request.form['blog-body']
-        new_blog = Blog(blog_name, blog_body, owner)
-        db.session.add(new_blog)
-        db.session.commit()
-        return redirect('/')
+        
+        if blog_name == '' or blog_body == '':
+            flash('Blog name and blog body required!', 'error')
+            return render_template('new_blog.html',title="Post a New Blog!", 
+            name=blog_name, body=blog_body)
+        
+        else:
+            new_blog = Blog(blog_name, blog_body, owner)
+            db.session.add(new_blog)
+            db.session.commit()
+            
+            return render_template('single_post.html', blog=new_blog)
 
-    return render_template('new_blog.html',title="Post a New Blog!")
+    return render_template('new_blog.html',title="Post a New Blog!", name=' ', body=' ')
     
 
 
@@ -65,6 +73,12 @@ def blogs():
     return render_template('all_blogs.html',title="Blogs!", 
         blogs=blogs)
 
+@app.route("/post", methods=['GET'])
+def single_post():
+    id = request.args.get('id')
+    blog = Blog.query.filter_by(id=id).first()
+
+    return render_template('single_post.html', blog=blog)
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
@@ -81,7 +95,7 @@ def login():
             flash('User password incorrect, or user does not exist', 'error')
 
 
-    return render_template('login.html')
+    return render_template('login.html', title="Login")
 
 @app.route('/logout')
 def logout():
@@ -109,16 +123,7 @@ def register():
             # TODO - user better response messaging
             flash('User already exists!', 'error')
 
-    return render_template('register.html')
-
-
-
-
-
-
-
-
-
+    return render_template('register.html', title="Register")
 
 if __name__ == '__main__':
     app.run()
