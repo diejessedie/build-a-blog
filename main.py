@@ -1,5 +1,6 @@
 from flask import Flask, request, redirect, render_template, session, flash
 from flask_sqlalchemy import SQLAlchemy
+from validation import invalid_email, invalid_psswrd, psswrd_mismatch
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
@@ -80,6 +81,7 @@ def single_post():
 
     return render_template('single_post.html', blog=blog)
 
+
 @app.route('/login', methods=['POST', 'GET'])
 def login():
 
@@ -95,7 +97,7 @@ def login():
             flash('User password incorrect, or user does not exist', 'error')
 
 
-    return render_template('login.html', title="Login")
+    return render_template('login.html', title="Log In", endpoint='/login')
 
 @app.route('/logout')
 def logout():
@@ -109,10 +111,19 @@ def register():
         password = request.form['password']
         verify = request.form['verify']
 
-        # TODO - validate user's data
+        errors = []
+
+        if invalid_email(email):
+            errors.append(invalid_email(email))
+        
+        if invalid_psswrd(password):
+            errors.append(invalid_psswrd(password))
+
+        if psswrd_mismatch(password, verify):
+            errors.append(psswrd_mismatch(password, verify))
 
         existing_user = User.query.filter_by(email=email).first()
-        if not existing_user:
+        if not existing_user and len(errors) == 0:
             new_user = User(email, password)
             db.session.add(new_user)
             db.session.commit()
@@ -120,10 +131,10 @@ def register():
             flash('Registered and logged in', "success")
             return redirect('/')
         else:
-            # TODO - user better response messaging
-            flash('User already exists!', 'error')
+            for error in errors:
+                flash(error, 'error')
 
-    return render_template('register.html', title="Register")
+    return render_template('register.html', title="Register", endpoint='/register')
 
 if __name__ == '__main__':
     app.run()

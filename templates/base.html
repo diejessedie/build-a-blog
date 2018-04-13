@@ -30,12 +30,15 @@
         <br>
         
         <div>
-            {% if request.endpoint != './login' %}
-            <p><a href="./logout">Log Out</a></p>
+            {% if endpoint != '/login' and endpoint != '/register' %}
+                <p><a href="./logout">Log Out</a></p>
+                <p><a href="./blog">Home</a></p>
+                <p><a href="./newblog">New Post</a></p>
+                <p><a href="./register">Register</a></p>
             {% endif %}
-            <p><a href="./blog">Home</a></p>
-            <p><a href="./newblog">New Post</a></p>
-            <p><a href="./register">Register</a></p>
+            {% if endpoint == '/register' %}
+                <p><a href="./login">Log In</a></p>
+            {% endif %}
         </div>
     </footer>
 </body>
