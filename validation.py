@@ -1,9 +1,9 @@
 def invalid_email(email):
-    if email != '':
-        if email.count("@") != 1 or email.count(".") != 1 or not (2 < len(email) < 21):
-            invalid_email.error = 'Invalid email. must contain "@" and ".", must be 3-20 characters in length, no spaces.'
-        else:
-          invalid_email.error = ''
+    
+    invalid_email.error = ''
+    
+    if email.count("@") != 1 or email.count(".") != 1 or not (2 < len(email) < 35):
+            invalid_email.error = 'Invalid email. Must contain "@" and ".", must be 3-20 characters in length, no spaces.'
     else:
         invalid_email.error = ''
 

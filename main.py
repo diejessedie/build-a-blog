@@ -19,7 +19,6 @@ class Blog(db.Model):
     def __init__(self, name, body, owner):
         self.name = name
         self.body = body
-        self.completed = False
         self.owner = owner
 
 class User(db.Model):
@@ -123,6 +122,9 @@ def register():
             errors.append(psswrd_mismatch(password, verify))
 
         existing_user = User.query.filter_by(email=email).first()
+        if existing_user:
+            errors.append('User already exists!')
+            
         if not existing_user and len(errors) == 0:
             new_user = User(email, password)
             db.session.add(new_user)
